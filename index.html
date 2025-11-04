@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Demo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #0e0e0e;
+            color: #f2f2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+        }
+
+        h2 {
+            color: #ff914d;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.5rem 0;
+            border: none;
+            border-radius: 6px;
+            background: #2b2b2b;
+            color: white;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.7rem;
+            background-color: #ff914d;
+            border: none;
+            color: black;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #ffa869;
+        }
+
+        p {
+            color: #aaa;
+            margin-top: 1rem;
+        }
+
+        .error {
+            color: #ff5555;
+            font-size: 0.9rem;
+            height: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+        <h2>Login</h2>
+        <div class="error" id="error-msg"></div>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="password" id="password" placeholder="Password" />
+        <button onclick="login()">Login</button>
+        <a href="register.html" style="color:#ff914d;display:block;margin-top:1rem;text-decoration:none;">
+            Create an account
+        </a>
+        <p>Demo credentials:<br><b>user</b> / <b>pass123</b></p>
+    </div>
+
+    <script>
+        async function login() {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const error = document.getElementById("error-msg");
+
+            try {
+                const response = await fetch("data/credentials.json");
+                const staticUsers = await response.json();
+
+                const localUsers = JSON.parse(localStorage.getItem("tempUsers") || "[]");
+
+                const allUsers = [...staticUsers, ...localUsers];
+
+                const valid = allUsers.some(
+                    (u) => u.username === username && u.password === password
+                );
+
+                if (valid) {
+                    localStorage.setItem("loggedIn", "true");
+                    window.location.href = "dashboard.html";
+                } else {
+                    error.textContent = "Invalid username or password.";
+                }
+            } catch (err) {
+                console.error("Error loading credentials:", err);
+                error.textContent = "Unable to verify login right now.";
+            }
+        }
+    </script>
+</body>
+
+</html>

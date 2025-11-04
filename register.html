@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Login Demo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #0e0e0e;
+            color: #f2f2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .register-box {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+        }
+
+        h2 {
+            color: #ff914d;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.5rem 0;
+            border: none;
+            border-radius: 6px;
+            background: #2b2b2b;
+            color: white;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.7rem;
+            background-color: #ff914d;
+            border: none;
+            color: black;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #ffa869;
+        }
+
+        a {
+            color: #ff914d;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .note {
+            color: #aaa;
+            font-size: 0.85rem;
+            margin-top: 1.2rem;
+            line-height: 1.3rem;
+        }
+
+        .error {
+            color: #ff5555;
+            font-size: 0.9rem;
+            height: 1rem;
+        }
+
+        .success {
+            color: #6cff6c;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            min-height: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-box">
+        <h2>Register</h2>
+        <div class="error" id="error-msg"></div>
+        <div class="success" id="success-msg"></div>
+        <input type="text" id="new-username" placeholder="Username" />
+        <input type="password" id="new-password" placeholder="Password" />
+        <button onclick="register()">Create Account</button>
+        <p class="note">
+            ⚠️ Note: This demo saves new accounts to your browser's local storage.
+            Registered users can log in immediately, but data resets if storage is cleared.
+        </p>
+        <a href="index.html">Back to Login</a>
+    </div>
+
+    <script>
+        async function register() {
+            const username = document.getElementById("new-username").value.trim();
+            const password = document.getElementById("new-password").value.trim();
+            const error = document.getElementById("error-msg");
+            const success = document.getElementById("success-msg");
+
+            error.textContent = "";
+            success.textContent = "";
+
+            if (!username || !password) {
+                error.textContent = "Please fill out all fields.";
+                return;
+            }
+
+            try {
+                const response = await fetch("data/credentials.json");
+                const users = await response.json();
+                const localUsers = JSON.parse(localStorage.getItem("tempUsers") || "[]");
+                const combined = [...users, ...localUsers];
+
+                if (combined.some(u => u.username === username)) {
+                    error.textContent = "Username already exists.";
+                    return;
+                }
+
+                localUsers.push({ username, password });
+                localStorage.setItem("tempUsers", JSON.stringify(localUsers));
+
+                success.textContent = "✅ Registration successful! You can now log in.";
+                setTimeout(() => (window.location.href = "index.html"), 2000);
+            } catch (err) {
+                console.error("Error during registration:", err);
+                error.textContent = "Unable to complete registration.";
+            }
+        }
+    </script>
+</body>
+
+</html>
