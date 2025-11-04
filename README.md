@@ -5,10 +5,10 @@ This project simulates a basic authentication flow using both a static `credenti
 
 ## Features
 
-- **Login Validation** – Authenticates against `data/credentials.json` or locally saved users.  
-- **Registration Page** – Allows creation of new accounts stored in the browser’s local storage.  
-- **Session Handling** – Maintains login state with `localStorage` until logout.  
-- **Redirect Protection** – Prevents access to the dashboard without a valid login.  
+- **Login Validation**: Authenticates against `data/credentials.json` or locally saved users.  
+- **Registration Page**: Allows creation of new accounts stored in the browser’s local storage.  
+- **Session Handling**: Maintains login state with `localStorage` until logout.  
+- **Redirect Protection**: Prevents access to the dashboard without a valid login.  
 
 ## Installation
 
